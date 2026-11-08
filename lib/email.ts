@@ -1,16 +1,7 @@
-import nodemailer from "nodemailer";
+import { sendEmail } from "./mailer";
+import { escapeHtml } from "./authz";
 import { Booking } from "@/types";
 import { formatPrice } from "./utils";
-
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || "smtp.gmail.com",
-  port: parseInt(process.env.SMTP_PORT || "587"),
-  secure: false,
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASSWORD,
-  },
-});
 
 export async function sendBookingConfirmationEmail(booking: any) {
   const adminEmail = process.env.ADMIN_EMAIL;
@@ -85,17 +76,17 @@ export async function sendBookingConfirmationEmail(booking: any) {
           <h2>Informations Client</h2>
           <div class="detail-row">
             <span class="detail-label">Nom complet:</span>
-            <span class="detail-value">${booking.firstName} ${booking.lastName}</span>
+            <span class="detail-value">${escapeHtml(booking.firstName)} ${escapeHtml(booking.lastName)}</span>
           </div>
           <div class="detail-row">
             <span class="detail-label">Téléphone:</span>
-            <span class="detail-value">${booking.phoneNumber}</span>
+            <span class="detail-value">${escapeHtml(booking.phoneNumber)}</span>
           </div>
           ${
             booking.email
               ? `<div class="detail-row">
             <span class="detail-label">Email:</span>
-            <span class="detail-value">${booking.email}</span>
+            <span class="detail-value">${escapeHtml(booking.email)}</span>
           </div>`
               : ""
           }
@@ -105,11 +96,11 @@ export async function sendBookingConfirmationEmail(booking: any) {
           <h2>Détails du Trajet</h2>
           <div class="detail-row">
             <span class="detail-label">📍 Départ:</span>
-            <span class="detail-value">${booking.departureAddress}</span>
+            <span class="detail-value">${escapeHtml(booking.departureAddress)}</span>
           </div>
           <div class="detail-row">
             <span class="detail-label">🎯 Destination:</span>
-            <span class="detail-value">${booking.destinationAddress}</span>
+            <span class="detail-value">${escapeHtml(booking.destinationAddress)}</span>
           </div>
           <div class="detail-row">
             <span class="detail-label">📏 Distance:</span>
@@ -126,13 +117,13 @@ export async function sendBookingConfirmationEmail(booking: any) {
           </div>
           <div class="detail-row">
             <span class="detail-label">⏰ Heure:</span>
-            <span class="detail-value">${booking.timeSlot}</span>
+            <span class="detail-value">${escapeHtml(booking.timeSlot)}</span>
           </div>
           ${
             booking.isRecurring
               ? `<div class="detail-row">
             <span class="detail-label">🔄 Récurrence:</span>
-            <span class="detail-value">${booking.recurrenceType}</span>
+            <span class="detail-value">${escapeHtml(booking.recurrenceType)}</span>
           </div>`
               : ""
           }
@@ -142,7 +133,7 @@ export async function sendBookingConfirmationEmail(booking: any) {
           booking.notes
             ? `<div class="booking-details">
           <h2>Notes</h2>
-          <p>${booking.notes}</p>
+          <p>${escapeHtml(booking.notes)}</p>
         </div>`
             : ""
         }
@@ -161,10 +152,9 @@ export async function sendBookingConfirmationEmail(booking: any) {
   `;
 
   try {
-    await transporter.sendMail({
-      from: `"Sama Confort" <${process.env.SMTP_USER}>`,
+    await sendEmail({
       to: adminEmail,
-      subject: `Nouvelle réservation - ${booking.firstName} ${booking.lastName}`,
+      subject: `Nouvelle réservation - ${escapeHtml(booking.firstName)} ${escapeHtml(booking.lastName)}`,
       html: emailHtml,
     });
 

@@ -3,7 +3,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import nodemailer from "nodemailer";
+import { sendEmail } from "@/lib/mailer";
+import { escapeHtml } from "@/lib/authz";
 
 export async function POST(
   req: NextRequest,
@@ -66,19 +67,7 @@ export async function POST(
         month: "long",
         year: "numeric",
       });
-
-      const transporter = nodemailer.createTransport({
-        host: process.env.SMTP_HOST || "smtp.gmail.com",
-        port: parseInt(process.env.SMTP_PORT || "587"),
-        secure: false,
-        auth: {
-          user: process.env.SMTP_USER,
-          pass: process.env.SMTP_PASSWORD,
-        },
-      });
-
-      await transporter.sendMail({
-        from: process.env.SMTP_USER,
+      await sendEmail({
         to: booking.email,
         subject: "🚗 Votre chauffeur est en route !",
         html: `
@@ -100,7 +89,7 @@ export async function POST(
               
               <!-- Corps principal -->
               <div style="background-color: #1a1a1a; border-radius: 16px; padding: 32px; margin-bottom: 20px; border: 1px solid #2a2a2a;">
-                <p style="font-size: 18px; margin-bottom: 24px; color: #ffffff;">Bonjour <strong>${booking.firstName}</strong>,</p>
+                <p style="font-size: 18px; margin-bottom: 24px; color: #ffffff;">Bonjour <strong>${escapeHtml(booking.firstName)}</strong>,</p>
                 
                 <div style="background: linear-gradient(135deg, rgba(0, 122, 255, 0.1) 0%, rgba(0, 122, 255, 0.05) 100%); border-left: 4px solid #007AFF; border-radius: 8px; padding: 20px; margin-bottom: 24px;">
                   <p style="font-size: 16px; line-height: 1.6; margin: 0; color: #ffffff;">
@@ -128,7 +117,7 @@ export async function POST(
                         <span style="color: #888888; font-size: 14px;">🕐 Heure</span>
                       </td>
                       <td style="padding: 12px 0; border-bottom: 1px solid #2a2a2a; text-align: right;">
-                        <strong style="color: #ffffff; font-size: 15px;">${booking.timeSlot}</strong>
+                        <strong style="color: #ffffff; font-size: 15px;">${escapeHtml(booking.timeSlot)}</strong>
                       </td>
                     </tr>
                     <tr>
@@ -144,7 +133,7 @@ export async function POST(
                   <div style="margin-top: 24px; padding-top: 20px; border-top: 2px solid #2a2a2a;">
                     <div style="margin-bottom: 16px;">
                       <span style="color: #888888; font-size: 13px; display: block; margin-bottom: 6px;">📍 DÉPART</span>
-                      <p style="margin: 0; color: #ffffff; font-size: 15px; line-height: 1.4;">${booking.departureAddress}</p>
+                      <p style="margin: 0; color: #ffffff; font-size: 15px; line-height: 1.4;">${escapeHtml(booking.departureAddress)}</p>
                     </div>
                     
                     <div style="margin: 20px 0; text-align: center;">
@@ -155,7 +144,7 @@ export async function POST(
                     
                     <div>
                       <span style="color: #888888; font-size: 13px; display: block; margin-bottom: 6px;">🎯 ARRIVÉE</span>
-                      <p style="margin: 0; color: #ffffff; font-size: 15px; line-height: 1.4;">${booking.destinationAddress}</p>
+                      <p style="margin: 0; color: #ffffff; font-size: 15px; line-height: 1.4;">${escapeHtml(booking.destinationAddress)}</p>
                     </div>
                   </div>
                 </div>

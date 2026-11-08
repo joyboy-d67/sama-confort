@@ -5,9 +5,9 @@ vi.mock('next-auth', () => ({
   getServerSession: vi.fn(),
 }));
 
-// Mock nodemailer
-vi.mock('nodemailer', () => ({
-  createTransport: vi.fn(() => ({ sendMail: vi.fn().mockResolvedValue({}) })),
+// Mock de l'envoi d'emails (Resend)
+vi.mock('@/lib/mailer', () => ({
+  sendEmail: vi.fn().mockResolvedValue(undefined),
 }));
 
 // Mock Prisma

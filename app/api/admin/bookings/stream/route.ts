@@ -1,3 +1,4 @@
+import { isStaff } from "@/lib/authz";
 import { NextRequest } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
@@ -9,7 +10,7 @@ export const dynamic = "force-dynamic";
 export async function GET(req: NextRequest) {
   const session = await getServerSession(authOptions);
   
-  if (!session) {
+  if (!isStaff(session)) {
     return new Response("Unauthorized", { status: 401 });
   }
 

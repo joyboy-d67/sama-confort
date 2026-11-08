@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { isStaff } from "@/lib/authz";
 import { prisma } from "@/lib/prisma";
 import { BookingFormData } from "@/types";
 import { calculatePrice } from "@/lib/utils";
@@ -150,6 +151,10 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!isStaff(session)) {
+      return NextResponse.json({ message: "Non autorisé" }, { status: 403 });
+    }
     const searchParams = request.nextUrl.searchParams;
     const status = searchParams.get("status");
     const date = searchParams.get("date");

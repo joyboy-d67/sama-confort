@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { isStaff } from "@/lib/authz";
 
 export async function GET(request: NextRequest, context: any) {
   const params = await (context as { params: Promise<{ id: string }> }).params;
@@ -31,6 +34,9 @@ export async function GET(request: NextRequest, context: any) {
 }
 
 export async function PATCH(request: NextRequest, context: any) {
+  if (!isStaff(await getServerSession(authOptions))) {
+    return NextResponse.json({ message: "Non autorisé" }, { status: 403 });
+  }
   const params = await (context as { params: Promise<{ id: string }> }).params;
   try {
     const data = await request.json();
@@ -61,6 +67,9 @@ export async function PATCH(request: NextRequest, context: any) {
 }
 
 export async function DELETE(request: NextRequest, context: any) {
+  if (!isStaff(await getServerSession(authOptions))) {
+    return NextResponse.json({ message: "Non autorisé" }, { status: 403 });
+  }
   const params = await (context as { params: Promise<{ id: string }> }).params;
   try {
     await prisma.booking.delete({

@@ -54,6 +54,13 @@ export interface Booking {
   email?: string;
   departureAddress: string;
   destinationAddress: string;
+  departureLat: number;
+  departureLng: number;
+  destinationLat: number;
+  destinationLng: number;
+  driverNotified?: boolean;
+  customerNotified?: boolean;
+  tripStarted?: boolean;
   date: Date;
   timeSlot: string;
   distance: number;

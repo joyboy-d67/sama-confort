@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 export async function GET(request: NextRequest, context: any) {
-  const { params } = context as { params: { id: string } };
+  const params = await (context as { params: Promise<{ id: string }> }).params;
   try {
     const booking = await prisma.booking.findUnique({
       where: {
@@ -31,7 +31,7 @@ export async function GET(request: NextRequest, context: any) {
 }
 
 export async function PATCH(request: NextRequest, context: any) {
-  const { params } = context as { params: { id: string } };
+  const params = await (context as { params: Promise<{ id: string }> }).params;
   try {
     const data = await request.json();
 
@@ -61,7 +61,7 @@ export async function PATCH(request: NextRequest, context: any) {
 }
 
 export async function DELETE(request: NextRequest, context: any) {
-  const { params } = context as { params: { id: string } };
+  const params = await (context as { params: Promise<{ id: string }> }).params;
   try {
     await prisma.booking.delete({
       where: {

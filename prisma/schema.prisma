@@ -6,8 +6,11 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  // Connexion "poolée" (PgBouncer) pour l'app en serverless sur Vercel
+  url       = env("DATABASE_URL")
+  // Connexion directe, requise par `prisma migrate` (verrous de migration)
+  directUrl = env("DATABASE_URL_UNPOOLED")
 }
 
 model Booking {

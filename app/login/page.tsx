@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -8,7 +8,7 @@ import Header from "@/components/Header";
 import { Loader2, UserPlus } from "lucide-react";
 import Button from "@/components/ui/Button";
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
@@ -126,5 +126,14 @@ export default function LoginPage() {
         </div>
       </main>
     </div>
+  );
+}
+
+// useSearchParams() exige une frontière Suspense pour le rendu statique (Next.js 15)
+export default function LoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <LoginForm />
+    </Suspense>
   );
 }

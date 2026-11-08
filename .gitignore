@@ -37,7 +37,8 @@ yarn-error.log*
 next-env.d.ts
 
 # prisma
-prisma/migrations
+# anciennes migrations SQLite (locales uniquement)
+prisma/migrations_sqlite_archive/
 
 # SQLite databases (contain real user data)
 *.db

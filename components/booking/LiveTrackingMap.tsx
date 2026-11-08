@@ -12,6 +12,8 @@ interface LiveTrackingMapProps {
   driverLat?: number;
   driverLng?: number;
   showDriver?: boolean;
+  status?: string;
+  onRouteUpdate?: (route: { distance: number; duration: number }) => void;
 }
 
 // Custom icons
@@ -127,7 +129,7 @@ export default function LiveTrackingMap({
 
     // Fit map to show all markers
     if (bounds.length > 0) {
-      mapRef.current.fitBounds(bounds, { padding: [50, 50] });
+      mapRef.current.fitBounds(bounds as L.LatLngBoundsExpression, { padding: [50, 50] });
     }
   }, [departureLat, departureLng, destinationLat, destinationLng, driverLat, driverLng, showDriver]);
 

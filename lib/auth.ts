@@ -60,7 +60,6 @@ export const authOptions: NextAuthOptions = {
         session.user.firstName = token.firstName;
         session.user.lastName = token.lastName;
         session.user.phoneNumber = token.phoneNumber;
-        // @ts-expect-error - extended type
         session.user.role = token.role as string | undefined;
       }
       return session;
@@ -71,7 +70,6 @@ export const authOptions: NextAuthOptions = {
         token.firstName = user.firstName;
         token.lastName = user.lastName;
         token.phoneNumber = user.phoneNumber;
-        // @ts-expect-error - extended type
         token.role = (user as any).role ?? "USER";
       }
       return token;

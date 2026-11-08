@@ -30,6 +30,9 @@ interface LiveRide {
   paymentMethod: "APP" | "CASH" | "CARD";
   requestedAt: string;
   acceptedAt: string | null;
+  // Absents du modèle LiveRide (courses immédiates) : formatRemainingTime renvoie alors null
+  date?: string;
+  timeSlot?: string;
 }
 
 export default function LiveRidesPage() {
@@ -292,10 +295,10 @@ export default function LiveRidesPage() {
                 <LiveTrackingMap
                   departureLat={selectedRide.departureLat}
                   departureLng={selectedRide.departureLng}
-                  destinationLat={selectedRide.destinationLat}
-                  destinationLng={selectedRide.destinationLng}
-                  driverLat={selectedRide.driverLat}
-                  driverLng={selectedRide.driverLng}
+                  destinationLat={selectedRide.destinationLat ?? undefined}
+                  destinationLng={selectedRide.destinationLng ?? undefined}
+                  driverLat={selectedRide.driverLat ?? undefined}
+                  driverLng={selectedRide.driverLng ?? undefined}
                   status={selectedRide.status}
                 />
               </div>

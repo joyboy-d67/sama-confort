@@ -100,7 +100,6 @@ export function LiveRideRequest({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           clientName,
-          clientPhone,
           departureAddress,
           departureLat,
           departureLng,

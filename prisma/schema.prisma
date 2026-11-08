@@ -6,11 +6,9 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  // Connexion "poolée" (PgBouncer) pour l'app en serverless sur Vercel
-  url       = env("DATABASE_URL")
-  // Connexion directe, requise par `prisma migrate` (verrous de migration)
-  directUrl = env("DATABASE_URL_UNPOOLED")
+  provider = "postgresql"
+  // Fournie automatiquement par le service Postgres de Railway
+  url      = env("DATABASE_URL")
 }
 
 model Booking {
